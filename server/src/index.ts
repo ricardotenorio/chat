@@ -1,24 +1,20 @@
-console.log('Try npm run lint/fix!');
+import express, {Express} from 'express';
+import {config} from 'dotenv';
+import cors from 'cors';
 
-const longString =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
+import router from './routes';
 
-const trailing = 'Semicolon';
+config();
 
-const why = 'am I tabbed?';
+const app: Express = express();
+const port = process.env.PORT || 3000;
 
-export function doSomeStuff(
-  withThis: string,
-  andThat: string,
-  andThose: string[]
-) {
-  //function on one line
-  if (!andThose.length) {
-    return false;
-  }
-  console.log(withThis);
-  console.log(andThat);
-  console.dir(andThose);
-  return;
-}
-// TODO: more examples
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(cors());
+
+app.use(router);
+
+app.listen(port, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+});
