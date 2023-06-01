@@ -3,6 +3,8 @@ import {config} from 'dotenv';
 import cors from 'cors';
 
 import router from './routes';
+import connect from './db/connection';
+import {init} from './db/init';
 
 config();
 
@@ -14,6 +16,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 app.use(router);
+
+connect();
+
+init();
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
