@@ -5,15 +5,15 @@ const router = Router();
 const controller = new AuthController();
 
 router.post('/register', async (request, response) => {
-  const message = await controller.register(request.body);
+  const {code, ...result} = await controller.register(request.body);
 
-  response.status(201).send(message);
+  response.status(code!).json(result);
 });
 
 router.post('/login', async (request, response) => {
-  const message = await controller.login(request.body);
+  const {code, ...result} = await controller.login(request.body);
 
-  response.status(200).json(message);
+  response.status(code!).json(result);
 });
 
 export default router;

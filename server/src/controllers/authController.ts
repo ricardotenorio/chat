@@ -6,11 +6,11 @@ class AuthController {
 
   public async register(user: UserDTO): Promise<UserAuthResponseDTO> {
     try {
-      const message = this.service.registerUser(user);
+      const message = await this.service.registerUser(user);
 
       return message;
     } catch (error) {
-      return {message: 'internal server error'};
+      return error as UserAuthResponseDTO;
     }
   }
 
@@ -18,11 +18,11 @@ class AuthController {
     credentials: CredentialsDTO
   ): Promise<UserAuthResponseDTO> {
     try {
-      const message = this.service.login(credentials);
+      const message = await this.service.login(credentials);
 
       return message;
     } catch (error) {
-      return {message: 'internal server error'};
+      return error as UserAuthResponseDTO;
     }
   }
 }

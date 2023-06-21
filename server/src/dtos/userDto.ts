@@ -11,8 +11,14 @@ interface CredentialsDTO {
   password: string;
 }
 
-interface UserAuthResponseDTO extends ResponseDTO {
-  token?: string;
+interface AuthDataDTO {
+  username: string;
+  email: string;
+  token: string;
 }
 
-export {UserDTO, CredentialsDTO, UserAuthResponseDTO};
+interface UserAuthResponseDTO extends ResponseDTO {
+  data?: AuthDataDTO;
+}
+
+export {UserDTO, CredentialsDTO, UserAuthResponseDTO, AuthDataDTO};
