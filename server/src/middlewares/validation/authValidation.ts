@@ -33,4 +33,6 @@ export const verifyToken = async (
 
     return next();
   });
+
+  return;
 };

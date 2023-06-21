@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Chat</title>
+  <style>
+    body {
+      background-color: #dbdbdb;
+      margin: 0;
+    }
+    .chat-container {
+      border: 1px solid #ccc;
+      width: 400px;
+      height: 400px;
+      overflow-y: scroll;
+      margin: auto;
+      margin-top: 20px;
+    }
+
+    .message {
+      padding: 10px;
+      background-color: #f2f2f2;
+      margin-bottom: 10px;
+    }
+
+    .user-message {
+      text-align: right;
+      background-color: #9bef9b;
+    }
+
+    .message input[type="text"] {
+      width: 300px;
+      padding: 5px;
+      margin: auto;
+    }
+
+    .message input[type="submit"] {
+      padding: 5px 10px;
+    }
+
+    .log {
+      color: rgb(1, 231, 62);
+      background-color: black;
+      font-family: monospace;
+      overflow-y: scroll;
+      min-height: 300px;
+      margin: 0;
+    }
+  </style>
+  <script>
+    const a = ["Small", "Blue", "Ugly"];
+    const b = ["Bear", "Dog", "Banana"];
+
+    const rA = Math.floor(Math.random()*a.length);
+    const rB = Math.floor(Math.random()*b.length);
+
+    var name = a[rA] + b[rB];
+  </script>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="message user-message">
+      <p>Chat</p>
+    </div>
+    <div class="message">
+      <p>Welcome to the chat!</p>
+    </div>
+  </div>
+
+  <div class="message">
+    <form id="chat-form">
+      <input type="text" id="message-input" placeholder="Type your message..." />
+      <input type="submit" value="Send" />
+    </form>
+  </div>
+  
+  <div id="log-container" class="log">
+  </div>
+
+  <!-- <script src="https://cdn.socket.io/4.4.1/socket.io.esm.min.js"></script> -->
+  <script type="module">
+    import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
+
+    const socket = io('ws://localhost:3000/');
+    
+    document.getElementById('chat-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const input = document.getElementById('message-input');
+      const message = input.value;
+      input.value = '';
+
+      if (message.trim() !== '') {
+        addMessage(message, true);
+        socket.emit('send message', `${name}>>>${message}`);
+      }
+    });
+
+    function addMessage(message, isUser) {
+      const chatContainer = document.querySelector('.chat-container');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message' + (isUser ? ' user-message' : '');
+      messageDiv.innerHTML = '<p>' + message + '</p>';
+
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function addLog(message) {
+      const current = new Date();
+      const logContainer = document.querySelector('#log-container');
+      // const logDiv = document.createElement('div');
+      logContainer.innerHTML += '<p>' + current + ': ' + message + '</p>';
+
+      // logContainer.appendChild(logDiv);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    socket.on('new message', function(message) {
+      addMessage(message, false);
+    });
+
+    socket.on('log', function(message) {
+      addLog(message);
+    });
+    
+    socket.on('get all messages', function(messages) {
+      messages.forEach(message => addMessage(message, false));      
+    });
+  </script>
+</body>
+</html>
